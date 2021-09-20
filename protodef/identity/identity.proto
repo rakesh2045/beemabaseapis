@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package protodef.identity;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "protodef/api/jsonapi/payload.proto";
+import "protodef/api/jsonapi/request.proto";
+
+option cc_enable_arenas = true;
+option go_package = "github.com/rakesh2045/go-genproto/beemabaseapis/identity;identity";
+option java_multiple_files = true;
+option java_outer_classname = "IdentityProto";
+option java_package = "org.protodef.identity";
+option objc_class_prefix = "DICTYAPI";
+
+
+// The content service definition
+service IdentityService {
+    // Gets the specified identity
+    rpc GetIdentityFromProvider(IdentityProviderReq) returns (Identity) {}
+    rpc GetIdentity(protodef.api.jsonapi.IdRequest) returns (Identity) {}
+    rpc ExistProviderIdentity(IdentityProviderReq) returns (protodef.api.jsonapi.ExistResponse) {}
+    // Create a new identity
+    rpc CreateIdentity (CreateIdentityReq) returns (Identity) {}
+    // Delete an existing identity
+    rpc DeleteIdentity (protodef.api.jsonapi.IdRequest) returns (google.protobuf.Empty) {}
+    // Basic health check that always return success
+    rpc Healthz (protodef.api.jsonapi.HealthzIdRequest) returns (google.protobuf.Empty) {}
+}
+
+// Definition for various fields
+message IdentityAttributes {
+    // An unique identifier provided by the third party.
+    // Generally it's an email id, however it could be something else specifically
+    // provided by an provider.
+    string identifier = 1;
+    // Name of the provider, for example, orcid, google, facebook etc.
+    string provider = 2;
+    // The id of the user to which this identity is connected.
+    // This id could be used to fetch a complete user response from the user service
+    int64 user_id = 3;
+    // Timestamp for creation and update 
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+
+}
+
+message IdentityData {
+    // The resource name
+    string type = 1;
+    // Unique id
+    int64 id = 2;
+    IdentityAttributes attributes = 3;
+    protodef.api.jsonapi.Links links = 4;
+}
+
+message Identity {
+    IdentityData data = 1;
+    protodef.api.jsonapi.Links links = 4;
+}
+
+message IdentityProviderReq {
+    // An unique identifier provided by the third party.
+    // Generally it's an email id, however it could be something else specifically
+    // provided by an provider.
+    string identifier = 1;
+    // Name of the provider, for example, orcid, google, facebook etc.
+    string provider = 2;
+
+}
+
+message CreateIdentityReq {
+    message Data {
+        // resource name
+        string type = 1;
+        NewIdentityAttributes attributes = 2;
+    }
+    Data data = 1;
+}
+
+message NewIdentityAttributes {
+    // An unique identifier provided by the third party.
+    // Generally it's an email id, however it could be something else specifically
+    // provided by an provider.
+    string identifier = 1;
+    // Name of the provider, for example, orcid, google, facebook etc.
+    string provider = 2;
+    // The id of the user to which this identity is connected.
+    // This id could be used to fetch a complete user response from the user service
+    int64 user_id = 3;
+}

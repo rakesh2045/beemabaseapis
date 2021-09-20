@@ -1,0 +1,12 @@
+version: v1
+name: buf.build/beema/beemabaseapis
+deps:
+  - buf.build/beta/googleapis
+lint:
+  use:
+    - BASIC
+  ignore:
+    - github.com/mwitkow
+breaking:
+  use:
+    - FILE
